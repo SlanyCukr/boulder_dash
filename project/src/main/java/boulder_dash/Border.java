@@ -3,19 +3,17 @@ package boulder_dash;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Clay implements GameEntity {
+public class Border implements GameEntity {
     private MyPoint2D position;
     private Image image;
 
-    public Clay(Point2D position) throws IOException {
+    public Border(Point2D position) throws IOException {
         this.position = new MyPoint2D(position);
 
-        FileInputStream inputStream = new FileInputStream("clay.jpg");
+        FileInputStream inputStream = new FileInputStream("border.jpg");
         image = new Image(inputStream);
 
         inputStream.close();

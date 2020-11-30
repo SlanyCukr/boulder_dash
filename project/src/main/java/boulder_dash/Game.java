@@ -1,4 +1,4 @@
-/*package boulder_dash;
+package boulder_dash;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -8,8 +8,8 @@ import javafx.scene.input.KeyEvent;
 
 import java.io.Serializable;
 
-public class Game implements HitListener, Serializable {
-    public boolean isOver;
+public class Game {//implements HitListener, Serializable {
+    /*public boolean isOver;
 
     private double width;
     private double height;
@@ -191,5 +191,5 @@ public class Game implements HitListener, Serializable {
 
         return objects;
     }
-}
 */
+}

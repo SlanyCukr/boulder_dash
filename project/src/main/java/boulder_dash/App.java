@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class App extends Application {
 	private Button start_game;
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
 		primaryStage.setTitle("Boulder dash");
 		Scene scene = new Scene(root, 1920, 1080);
@@ -74,7 +75,7 @@ public class App extends Application {
 			root.getChildren().add(canvas);
 			Scene scene = new Scene(root, 1920, 1080);
 			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> world.control(event));
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.resizableProperty().set(false);
 			primaryStage.setTitle("Boulder dash");
@@ -92,11 +93,11 @@ public class App extends Application {
 
 	@FXML
 	void loadGame(ActionEvent event) throws IOException, ClassNotFoundException {
-		Object[] objects = DataMaster.getInstance().loadGame();
+		/*Object[] objects = DataMaster.getInstance().loadGame();
 
 		Player player1 = (Player) objects[0];
 		Player player2 = (Player) objects[1];
-		Ball ball = (Ball) objects[2];
+		//Ball ball = (Ball) objects[2];
 		ScoreDrawer scoreDrawer = (ScoreDrawer) objects[3];
 		ScoreDetector scoreDetector = (ScoreDetector) objects[4];
 
@@ -105,6 +106,7 @@ public class App extends Application {
 		//game.loadGame(player1, player2, ball, scoreDrawer, scoreDetector);
 
 		//app_start_game(game);
+		*/
 	}
 
 	@FXML
