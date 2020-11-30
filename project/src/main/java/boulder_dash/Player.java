@@ -6,8 +6,9 @@ import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
-public class Player implements GameEntity   {
+public class Player implements GameEntity {
     private MyPoint2D position;
     private Image image;
 

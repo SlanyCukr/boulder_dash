@@ -37,17 +37,42 @@ public class World {
     public void control(KeyEvent event){
         KeyCode keyCode = event.getCode();
 
-        if (keyCode == KeyCode.W)
+        if (keyCode == KeyCode.W && playerCanMove(new Point2D(player.getPosition().getX(), player.getPosition().getY() - 25)))
             player.up();
-        else if (keyCode == KeyCode.S)
+        else if (keyCode == KeyCode.S && playerCanMove(new Point2D(player.getPosition().getX(), player.getPosition().getY() + 25)))
             player.down();
-        else if (keyCode == KeyCode.A)
+        else if (keyCode == KeyCode.A && playerCanMove(new Point2D(player.getPosition().getX() - 25, player.getPosition().getY())))
             player.right();
-        else if (keyCode == KeyCode.D)
+        else if (keyCode == KeyCode.D && playerCanMove(new Point2D(player.getPosition().getX() + 25, player.getPosition().getY())))
             player.left();
         else if(keyCode == KeyCode.ESCAPE) {
             isOver = true;
         }
+    }
+
+    private boolean playerCanMove(Point2D nextPosition){
+        int xPosition = (int) (nextPosition.getX() / 25);
+        int yPosition = (int) (nextPosition.getY() / 25);
+
+        // handle negative index
+        if(xPosition < 0 || yPosition < 0)
+            return false;
+        if(xPosition >= 74 || yPosition >= 41)
+            return false;
+
+        // handle null objects
+        if(objectList[xPosition][yPosition] == null)
+            return true;
+
+        if(objectList[xPosition][yPosition].getClass().getName().equals("boulder_dash.Clay")){
+            objectList[xPosition][yPosition] = null;
+            return true;
+        }
+        return false;
+    }
+
+    private void handlePlayerCollisions(){
+
     }
 
     private GameEntity[][] getObjects() throws IOException {
