@@ -6,14 +6,13 @@ import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 
-public class Player implements GameEntity {
+public class Player extends Movable {
     private MyPoint2D position;
     private Image image;
 
     public Player(Point2D position) throws IOException {
-        this.position = new MyPoint2D(position);
+        super(position);
 
         FileInputStream inputStream = new FileInputStream("player.jpg");
         image = new Image(inputStream);
@@ -31,21 +30,5 @@ public class Player implements GameEntity {
 
     public void draw(GraphicsContext gc){
         gc.drawImage(image, getPosition().getX(), getPosition().getY());
-    }
-
-    public void up(){
-        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(0, -25)));
-    }
-
-    public void down(){
-        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(0, +25)));
-    }
-
-    public void left(){
-        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(+25, 0)));
-    }
-
-    public void right(){
-        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(-25, 0)));
     }
 }
