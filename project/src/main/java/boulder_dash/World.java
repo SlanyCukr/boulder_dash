@@ -89,22 +89,26 @@ public class World {
         // create exit
         boolean exitSide = random.nextBoolean();
         if(exitSide){
-            int first_value = (random.nextBoolean()) ? 0 : 73;
-            int second_value = random.nextInt(40);
-            objects[first_value][second_value] = null;
+            int firstValue = (random.nextBoolean()) ? 0 : 73;
+            int secondValue = random.nextInt(40);
+            objects[firstValue][secondValue] = null;
         }
         else{
-            int first_value = random.nextInt(73);
-            int second_value = (random.nextBoolean()) ? 0 : 40;
-            objects[first_value][second_value] = null;
+            int firstValue = random.nextInt(73);
+            int secondValue = (random.nextBoolean()) ? 0 : 40;
+            objects[firstValue][secondValue] = null;
         }
 
         // create other objects randomly
         for(int i = 1; i < 73; i+= 1){
             for(int j = 1; j < 40; j+= 1){
-                // 80 % chance to generate clay
-                if(random.nextInt(10) <= 7)
+                int randomNumber = random.nextInt(11);
+
+                // randomly generate objects
+                if(randomNumber <= 6)
                     objects[i][j] = new Clay(new Point2D(i*25, j*25));
+                else if(randomNumber == 7 || randomNumber == 8)
+                    objects[i][j] = new Boulder(new Point2D(i*25, j*25));
                 else
                     objects[i][j] = null;
             }

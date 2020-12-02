@@ -8,9 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Boulder extends Movable {
-    private MyPoint2D position;
-    private Image image;
-
     public Boulder(Point2D position) throws IOException {
         super(position);
 

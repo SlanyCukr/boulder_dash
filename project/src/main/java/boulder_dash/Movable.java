@@ -8,8 +8,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public abstract class Movable implements GameEntity{
-    private MyPoint2D position;
-    private Image image;
+    protected MyPoint2D position;
+    protected Image image;
 
     public Movable(Point2D position) throws IOException {
         this.position = new MyPoint2D(position);
