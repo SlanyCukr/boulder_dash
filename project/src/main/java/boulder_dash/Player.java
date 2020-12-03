@@ -28,4 +28,20 @@ public class Player extends Movable {
     public void draw(GraphicsContext gc){
         gc.drawImage(image, getPosition().getX(), getPosition().getY());
     }
+
+    public void up(){
+        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(0, -25)));
+    }
+
+    public void down(){
+        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(0, +25)));
+    }
+
+    public void left(){
+        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(+25, 0)));
+    }
+
+    public void right(){
+        this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(-25, 0)));
+    }
 }

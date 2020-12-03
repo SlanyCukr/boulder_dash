@@ -14,11 +14,15 @@ public class World {
 
     private Player player;
     private GameEntity[][] objectList;
+    private int deltaMax;
+    private int currentDelta;
 
-    public World(String player_name) throws IOException {
+    public World(String player_name, int deltaMax) throws IOException {
         this.player = new Player(new Point2D(25, 25));
+        this.deltaMax = deltaMax;
+        this.currentDelta = 0;
 
-        objectList = getObjects();
+        objectList = generateGame();
     }
 
     public void draw(Canvas canvas) {
@@ -26,15 +30,15 @@ public class World {
 
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        for(GameEntity[] ge_arr : objectList)
-            for(GameEntity ge : ge_arr)
-                if(ge != null)
+        for (GameEntity[] ge_arr : objectList)
+            for (GameEntity ge : ge_arr)
+                if (ge != null)
                     ge.draw(gc);
 
         player.draw(gc);
     }
 
-    public void control(KeyEvent event){
+    public void control(KeyEvent event) {
         KeyCode keyCode = event.getCode();
 
         if (keyCode == KeyCode.W && playerCanMove(new Point2D(player.getPosition().getX(), player.getPosition().getY() - 25)))
@@ -45,8 +49,35 @@ public class World {
             player.right();
         else if (keyCode == KeyCode.D && playerCanMove(new Point2D(player.getPosition().getX() + 25, player.getPosition().getY())))
             player.left();
-        else if(keyCode == KeyCode.ESCAPE) {
+        else if (keyCode == KeyCode.ESCAPE) {
             isOver = true;
+        }
+    }
+
+    public void simulate(int timeDelta) {
+        // slow down boulders falling down
+        if(this.currentDelta != this.deltaMax) {
+            this.currentDelta += timeDelta;
+            return;
+        }
+
+        this.currentDelta = 0;
+
+        for(int i = 1; i < 73; i++){
+            for(int j = 1; j < 40; j+= 1){
+                // ignore empty objects
+                if(objectList[i][j] == null)
+                    continue;
+
+                // move one boulder downwards
+                if(objectList[i][j].getClass().getName().equals("boulder_dash.Boulder") && objectList[i][j + 1] == null) {
+                    Boulder temp = (Boulder) objectList[i][j];
+                    objectList[i][j] = null;
+                    objectList[i][j + 1] = temp;
+                    temp.setPosition(new Point2D(temp.getPosition().getX(), temp.getPosition().getY() + 25));
+                    return;
+                }
+            }
         }
     }
 
@@ -64,18 +95,15 @@ public class World {
         if(objectList[xPosition][yPosition] == null)
             return true;
 
-        if(objectList[xPosition][yPosition].getClass().getName().equals("boulder_dash.Clay")){
+        // remove clay
+        if(objectList[xPosition][yPosition].getClass().getName().equals("boulder_dash.Clay")) {
             objectList[xPosition][yPosition] = null;
             return true;
         }
         return false;
     }
 
-    private void handlePlayerCollisions(){
-
-    }
-
-    private GameEntity[][] getObjects() throws IOException {
+    private GameEntity[][] generateGame() throws IOException {
         Random random = new Random();
         GameEntity[][] objects = new GameEntity[74][41];
 
