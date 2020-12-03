@@ -112,7 +112,7 @@ public class App extends Application {
 	void startGame(ActionEvent event_) throws IOException {
 		canvas = new Canvas(1920, 1080);
 
-		app_start_game(new World(playerName.getText(), 250));
+		app_start_game(new World(playerName.getText(), 250, 74, 38));
 	}
 
 	@FXML

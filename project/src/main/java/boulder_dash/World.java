@@ -13,12 +13,16 @@ public class World {
 
     private Player player;
     private GameEntity[][] objectList;
+    private int objectsXLen;
+    private int objectsYLen;
     private int deltaMax;
     private int currentDelta;
 
-    public World(String player_name, int deltaMax) throws IOException {
+    public World(String player_name, int deltaMax, int objectsXLen, int objectsYLen) throws IOException {
         this.player = new Player(new Point2D(25, 25));
         this.deltaMax = deltaMax;
+        this.objectsXLen = objectsXLen;
+        this.objectsYLen = objectsYLen;
         this.currentDelta = 0;
 
         objectList = generateGame();
@@ -30,6 +34,7 @@ public class World {
                 if (ge != null)
                     ge.draw(gc);
 
+        // draw player on top of everything
         player.draw(gc);
     }
 
@@ -58,8 +63,8 @@ public class World {
 
         this.currentDelta = 0;
 
-        for(int i = 1; i < 73; i++){
-            for(int j = 1; j < 40; j+= 1){
+        for(int i = 1; i < objectsXLen; i++){
+            for(int j = 1; j < objectsYLen; j+= 1){
                 // ignore empty objects
                 if(objectList[i][j] == null)
                     continue;
@@ -71,7 +76,7 @@ public class World {
                     objectList[i][j + 1] = temp;
                     temp.setPosition(new Point2D(temp.getPosition().getX(), temp.getPosition().getY() + 25));
 
-                    // check if boulder killed player
+                    // check if boulder movement killed player
                     int playerXPositionArr = (int) (player.getPosition().getX() / 25);
                     int playerYPositionArr = (int) (player.getPosition().getY() / 25);
                     if(playerXPositionArr == i && playerYPositionArr == j + 1)
@@ -89,7 +94,7 @@ public class World {
         // handle negative index
         if(xPosition < 0 || yPosition < 0)
             return false;
-        if(xPosition >= 74 || yPosition >= 41)
+        if(xPosition >= objectsXLen || yPosition >= objectsYLen)
             return false;
 
         // handle null objects
@@ -101,16 +106,23 @@ public class World {
             objectList[xPosition][yPosition] = null;
             return true;
         }
+
+        // collect diamonds
+        if(objectList[xPosition][yPosition].getClass().getName().equals("boulder_dash.Diamond")) {
+            objectList[xPosition][yPosition] = null;
+            player.addDiamond();
+            return true;
+        }
         return false;
     }
 
     private GameEntity[][] generateGame() throws IOException {
         Random random = new Random();
-        GameEntity[][] objects = new GameEntity[74][41];
+        GameEntity[][] objects = new GameEntity[objectsXLen][objectsYLen];
 
         // create borders
-        for(int i = 0; i < 74; i++){
-            for(int j = 0; j < 41; j++){
+        for(int i = 0; i < objectsXLen; i++){
+            for(int j = 0; j < objectsYLen; j++){
                 objects[i][j] = new Border(new Point2D(i*25, j*25));
             }
         }
@@ -118,19 +130,19 @@ public class World {
         // create exit
         boolean exitSide = random.nextBoolean();
         if(exitSide){
-            int firstValue = (random.nextBoolean()) ? 0 : 73;
-            int secondValue = random.nextInt(40);
+            int firstValue = (random.nextBoolean()) ? 0 : objectsXLen - 1;
+            int secondValue = random.nextInt(objectsYLen);
             objects[firstValue][secondValue] = null;
         }
         else{
-            int firstValue = random.nextInt(73);
-            int secondValue = (random.nextBoolean()) ? 0 : 40;
+            int firstValue = random.nextInt(objectsXLen);
+            int secondValue = (random.nextBoolean()) ? 0 : objectsYLen - 1;
             objects[firstValue][secondValue] = null;
         }
 
         // create other objects randomly
-        for(int i = 1; i < 73; i+= 1){
-            for(int j = 1; j < 40; j+= 1){
+        for(int i = 1; i < objectsXLen - 1; i+= 1){
+            for(int j = 1; j < objectsYLen - 1; j+= 1){
                 int randomNumber = random.nextInt(20);
 
                 // randomly generate objects
@@ -148,7 +160,7 @@ public class World {
         // create walls
         int numberOfWalls = random.nextInt(4) + 1;
         for(int i = 1; i < numberOfWalls + 1; i++){
-            for(int j = 1 + random.nextInt(5); j < 73 - random.nextInt(10); j++){
+            for(int j = 1 + random.nextInt(5); j < objectsXLen - random.nextInt(10); j++){
                 objects[j][(i * 10) - 1] = new Wall(new Point2D(j * 25, ((i * 10) - 1) * 25));
             }
         }
