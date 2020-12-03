@@ -8,8 +8,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Player extends Movable {
+    private int diamondsCount;
+
     public Player(Point2D position) throws IOException {
         super(position);
+
+        diamondsCount = 0;  
 
         FileInputStream inputStream = new FileInputStream("player.jpg");
         image = new Image(inputStream);

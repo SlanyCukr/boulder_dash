@@ -1,5 +1,6 @@
 package boulder_dash;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -42,9 +43,6 @@ public class App extends Application {
 	@FXML
 	private TextField playerName;
 
-	@FXML
-	private Button start_game;
-
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
@@ -71,23 +69,24 @@ public class App extends Application {
 
 			//Construct a main window with a canvas.
 			Group root = new Group();
-			canvas = new Canvas(1920, 1920);
+			canvas = new Canvas(1920, 1080);
 			root.getChildren().add(canvas);
 			Scene scene = new Scene(root, 1920, 1080);
 			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> world.control(event));
-			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.resizableProperty().set(false);
 			primaryStage.setTitle("Boulder dash");
 			primaryStage.show();
 
 			//Exit program when main window is closed
-			primaryStage.setOnCloseRequest(this::exitProgram);
+			//primaryStage.setOnCloseRequest(this::exitProgram);
 
-			//Draw scene on a separate thread to avoid blocking UI.
+			//Draw scene on a separate thread to avoid blocking UI
 			new Thread(this::drawScene).start();
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -138,23 +137,22 @@ public class App extends Application {
 	 *@return      nothing
 	 */
 	private void drawScene() {
-		//graphic context is used for a painting
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		// put your code here
-		gc.setFill(Color.AQUA);
-		gc.setStroke(Color.BLACK);
-
 		while(!Routines.isEndOfThreadRequestedByJavaVM() && !world.isOver) {
-			world.draw(canvas);
+			Platform.runLater(() ->{
+				GraphicsContext gc = canvas.getGraphicsContext2D();
+				gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				world.draw(gc);
+					});
 			Routines.sleep(25);
 			world.simulate(25);
 		}
 
 		// close old game window
 		Platform.runLater(() ->{
-			/*final Stage stage = (Stage) canvas.getScene().getWindow();
+			final Stage stage = (Stage) canvas.getScene().getWindow();
 			stage.close();
 
+			/*
 			highScores.add(game.getHighScore());
 			//high_scores_table.getItems().add(game.getHighScore());
 			highScores.sort(Comparator.comparing((HighScore hs) -> hs.value.getValue()).reversed());

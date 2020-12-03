@@ -1,7 +1,6 @@
 package boulder_dash;
 
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,11 +24,7 @@ public class World {
         objectList = generateGame();
     }
 
-    public void draw(Canvas canvas) {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
+    public void draw(GraphicsContext gc) {
         for (GameEntity[] ge_arr : objectList)
             for (GameEntity ge : ge_arr)
                 if (ge != null)
@@ -130,13 +125,15 @@ public class World {
         // create other objects randomly
         for(int i = 1; i < 73; i+= 1){
             for(int j = 1; j < 40; j+= 1){
-                int randomNumber = random.nextInt(11);
+                int randomNumber = random.nextInt(20);
 
                 // randomly generate objects
-                if(randomNumber <= 6)
+                if(randomNumber <= 16)
                     objects[i][j] = new Clay(new Point2D(i*25, j*25));
-                else if(randomNumber == 7 || randomNumber == 8)
+                else if(randomNumber == 17 || randomNumber == 18)
                     objects[i][j] = new Boulder(new Point2D(i*25, j*25));
+                else if(randomNumber == 19)
+                    objects[i][j] = new Diamond(new Point2D(i * 25, j * 25));
                 else
                     objects[i][j] = null;
             }
@@ -146,9 +143,12 @@ public class World {
         int numberOfWalls = random.nextInt(4) + 1;
         for(int i = 1; i < numberOfWalls + 1; i++){
             for(int j = 1 + random.nextInt(5); j < 73 - random.nextInt(10); j++){
-                objects[j][i * 10 + random.nextInt(5)] = new Wall(new Point2D(j * 25, i * 10 * 25));
+                objects[j][(i * 10) - 1] = new Wall(new Point2D(j * 25, ((i * 10) - 1) * 25));
             }
         }
+
+        // make room for player
+        objects[1][1] = null;
 
         return objects;
     }
