@@ -142,6 +142,14 @@ public class World {
             }
         }
 
+        // create walls
+        int numberOfWalls = random.nextInt(4) + 1;
+        for(int i = 1; i < numberOfWalls + 1; i++){
+            for(int j = 1 + random.nextInt(5); j < 73 - random.nextInt(10); j++){
+                objects[j][i * 10 + random.nextInt(5)] = new Wall(new Point2D(j * 25, i * 10 * 25));
+            }
+        }
+
         return objects;
     }
 }
