@@ -70,6 +70,12 @@ public class World {
                     objectList[i][j] = null;
                     objectList[i][j + 1] = temp;
                     temp.setPosition(new Point2D(temp.getPosition().getX(), temp.getPosition().getY() + 25));
+
+                    // check if boulder killed player
+                    int playerXPositionArr = (int) (player.getPosition().getX() / 25);
+                    int playerYPositionArr = (int) (player.getPosition().getY() / 25);
+                    if(playerXPositionArr == i && playerYPositionArr == j + 1)
+                        isOver = true;
                     return;
                 }
             }

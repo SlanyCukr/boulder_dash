@@ -48,4 +48,10 @@ public class Player extends Movable {
     public void right(){
         this.position = new MyPoint2D(this.position.getPoint().add(new Point2D(-25, 0)));
     }
+
+    public void addDiamond(){
+        this.diamondsCount += 1;
+    }
+
+    public int getDiamondsCount(){return this.diamondsCount;}
 }
