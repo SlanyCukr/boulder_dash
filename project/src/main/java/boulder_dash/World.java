@@ -11,6 +11,7 @@ import java.util.Random;
 
 public class World {
     public boolean isOver;
+    private boolean exitingGame;
 
     private Player player;
     private HUD hud;
@@ -19,6 +20,7 @@ public class World {
     private int objectsYLen;
     private int deltaMax;
     private int currentDelta;
+    private MyPoint2D exitCords;
 
     public World(String playerName, int deltaMax, int objectsXLen, int objectsYLen, int textY, int gameLength) throws IOException {
         this.player = new Player(new Point2D(25, 25), playerName);
@@ -41,7 +43,7 @@ public class World {
         player.draw(gc);
 
         // draw HUD
-        hud.draw(gc, player.getPlayerName(), player.getScore());
+        hud.draw(gc, player.getPlayerName(), player.getScore(), exitingGame);
     }
 
     public void control(KeyEvent event) {
@@ -61,6 +63,11 @@ public class World {
     }
 
     public void simulate(int timeDelta) {
+        // calculate smoothly bonus score
+        if(exitingGame){
+            player.bonusScore(hud.decrementRemainingTime());
+        }
+
         // end the game if no time is left
         if(hud.getRemainingTime() <= 0) {
             this.isOver = true;
@@ -103,6 +110,12 @@ public class World {
         int xPosition = (int) (nextPosition.getX() / 25);
         int yPosition = (int) (nextPosition.getY() / 25);
 
+        // handle exit
+        if(nextPosition.getX() == exitCords.getPoint().getX() && nextPosition.getY() == exitCords.getPoint().getY()){
+            exitingGame = true;
+            return true;
+        }
+
         // handle negative index
         if(xPosition < 0 || yPosition < 0)
             return false;
@@ -128,6 +141,12 @@ public class World {
         return false;
     }
 
+    private void endGameThroughExit(){
+        player.bonusScore(hud.getRemainingTime());
+
+        isOver = true;
+    }
+
     private GameEntity[][] generateGame() throws IOException {
         Random random = new Random();
         GameEntity[][] objects = new GameEntity[objectsXLen][objectsYLen];
@@ -143,13 +162,15 @@ public class World {
         boolean exitSide = random.nextBoolean();
         if(exitSide){
             int firstValue = (random.nextBoolean()) ? 0 : objectsXLen - 1;
-            int secondValue = random.nextInt(objectsYLen);
+            int secondValue = random.nextInt(objectsYLen - 1);
             objects[firstValue][secondValue] = null;
+            exitCords = new MyPoint2D(firstValue * 25, secondValue * 25);
         }
         else{
-            int firstValue = random.nextInt(objectsXLen);
+            int firstValue = random.nextInt(objectsXLen - 1);
             int secondValue = (random.nextBoolean()) ? 0 : objectsYLen - 1;
             objects[firstValue][secondValue] = null;
+            exitCords = new MyPoint2D(firstValue * 25, secondValue * 25);
         }
 
         // create other objects randomly

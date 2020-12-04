@@ -8,6 +8,7 @@ public class HUD {
     private long endTime;
     private double textY;
     private double textXMax;
+    private int remainingTime;
 
     public HUD(long endTime, int textY, int textXMax){
         this.endTime = endTime;
@@ -15,9 +16,14 @@ public class HUD {
         this.textXMax = textXMax * 25;
     }
 
-    public void draw(GraphicsContext gc, String playerName, int numberOfDiamonds){
+    public void draw(GraphicsContext gc, String playerName, int numberOfDiamonds, boolean isExiting){
         drawPlayerName(gc, playerName);
         drawPlayerDiamonds(gc, numberOfDiamonds);
+
+        // don't update time if the game is exiting
+        if(!isExiting)
+            updateRemainingTime();
+
         drawRemainingTime(gc);
     }
 
@@ -30,13 +36,21 @@ public class HUD {
     }
 
     private void drawRemainingTime(GraphicsContext gc){
-        int remainingTime = getRemainingTime();
-
         gc.fillText(String.valueOf(remainingTime),(3 * textXMax) / 4, textY);
     }
 
-    public int getRemainingTime(){
+    private void updateRemainingTime(){
         Date currentDate = new Date();
-        return (int) (endTime / 1000 - currentDate.getTime() / 1000);
+        remainingTime =  (int) (endTime / 1000 - currentDate.getTime() / 1000);
+    }
+
+    public int getRemainingTime(){
+        return remainingTime;
+    }
+
+    public int decrementRemainingTime(){
+        remainingTime -= 1;
+
+        return remainingTime;
     }
 }

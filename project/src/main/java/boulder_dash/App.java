@@ -83,7 +83,7 @@ public class App extends Application {
 			//Exit program when main window is closed
 			//primaryStage.setOnCloseRequest(this::exitProgram);
 
-			//Draw scene on a separate thread to avoid blocking UI
+			//Draw scene on a separate thread to avoid blocking diamondsCountUI
 			new Thread(this::drawScene).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public class App extends Application {
 	void startGame(ActionEvent event_) throws IOException {
 		canvas = new Canvas(1920, 1080);
 
-		app_start_game(new World(playerName.getText(), 250, 74, 38, 40, 10));
+		app_start_game(new World(playerName.getText(), 250, 74, 38, 40, 180));
 	}
 
 	@FXML

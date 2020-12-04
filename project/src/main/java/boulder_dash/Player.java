@@ -52,12 +52,16 @@ public class Player extends Movable {
     }
 
     public void addDiamond(){
-        this.score += 100;
+        this.score += 1000;
     }
 
     public int getScore(){return this.score;}
 
     public String getPlayerName(){
         return this.playerName;
+    }
+
+    public void bonusScore(int time){
+        this.score += time * 10;
     }
 }
