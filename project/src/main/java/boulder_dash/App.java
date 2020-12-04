@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
@@ -73,18 +74,14 @@ public class App extends Application {
 		highScores = new ArrayList<>();
 		high_scores_table.setItems(FXCollections.observableList(highScores));
 
-		/*connection = DriverManager.getConnection("jdbc:derby:scoreDB;create=true");
+		// DataMaster.getInstance().createTable();
+		// DataMaster.getInstance().emptyTable();
 
-		Statement stmt = connection.createStatement();
-		// String sql = "CREATE TABLE High_scores (name VARCHAR(20) NOT NULL, score INT NOT NULL, PRIMARY KEY (name));";
-		// stmt.execute(sql);
-		//stmt.execute("DELETE FROM High_scores");
-
-		ResultSet rs = stmt.executeQuery("SELECT * FROM High_scores");
+		ResultSet rs = DataMaster.getInstance().selectHighScores();
 		while(rs.next()) {
 			highScores.add(new HighScore(rs.getInt("score"), rs.getString("name")));
 		}
-		high_scores_table.sort();*/
+		high_scores_table.sort();
 	}
 
 	private void app_start_game(World world){
@@ -108,7 +105,7 @@ public class App extends Application {
 			//Exit program when main window is closed
 			//primaryStage.setOnCloseRequest(this::exitProgram);
 
-			//Draw scene on a separate thread to avoid blocking diamondsCountUI
+			//Draw scene on a separate thread to avoid blocking main thread
 			new Thread(this::drawScene).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,17 +140,14 @@ public class App extends Application {
 
 	@FXML
 	void exitGame(ActionEvent event) throws SQLException, IOException, ClassNotFoundException {
-		/*Statement stmt = connection.createStatement();
-
-		stmt.execute("DELETE FROM High_scores");
+		DataMaster.getInstance().emptyTable();
 
 		for(HighScore hs : high_scores_table.getItems()){
-			stmt.execute("INSERT INTO High_scores VALUES ('" + hs.player.get() + "', " + hs.value.get() + ")");
+			DataMaster.getInstance().addHighScore(hs);
 		}
-		connection.close();
 
-		DataMaster.getInstance().saveGame(game.getSaveData());
-		*/
+		// DataMaster.getInstance().saveGame(game.getSaveData());
+
 		System.exit(0);
 	}
 
@@ -180,13 +174,12 @@ public class App extends Application {
 			world.simulate(25);
 		}
 
-		// close old game window
+		// close old game window, sort and add high score
 		Platform.runLater(() ->{
 			final Stage stage = (Stage) canvas.getScene().getWindow();
 			stage.close();
 
 			highScores.add(world.getHighScore());
-			//high_scores_table.getItems().add(game.getHighScore());
 			highScores.sort(Comparator.comparing((HighScore hs) -> hs.value.getValue()).reversed());
 
 			HashSet<HighScore> hashSet = new HashSet<>(highScores);
@@ -197,9 +190,5 @@ public class App extends Application {
 			high_scores_table.getItems().addAll(highScores);
 			high_scores_table.sort();
 		});
-	}
-
-	private void exitProgram(WindowEvent evt) {
-		System.exit(0);
 	}
 }
