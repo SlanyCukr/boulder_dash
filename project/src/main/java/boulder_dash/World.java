@@ -152,24 +152,18 @@ public class World {
                 int randomNumber = random.nextInt(20);
 
                 // randomly generate objects
-                if(randomNumber <= 16)
+                if(randomNumber <= 14)
                     objects[i][j] = new Clay(new Point2D(i*25, j*25));
-                else if(randomNumber == 17 || randomNumber == 18)
+                else if(randomNumber == 15 || randomNumber == 16)
                     objects[i][j] = new Boulder(new Point2D(i*25, j*25));
-                else if(randomNumber == 19)
+                else if(randomNumber == 17)
                     objects[i][j] = new Diamond(new Point2D(i * 25, j * 25));
+                else if(randomNumber == 18 || randomNumber == 19)
+                    objects[i][j] = new Wall(new Point2D(i * 25, j * 25));
                 else
                     objects[i][j] = null;
             }
         }
-
-        // create walls
-        /*int numberOfWalls = random.nextInt(4) + 1;
-        for(int i = 1; i < numberOfWalls + 1; i++){
-            for(int j = 1 + random.nextInt(5); j < objectsXLen - random.nextInt(10) - 1; j++){
-                objects[j][(i * 10) - 1] = new Wall(new Point2D(j * 25, ((i * 10) - 1) * 25));
-            }
-        }*/
 
         // make room for player
         objects[1][1] = null;
