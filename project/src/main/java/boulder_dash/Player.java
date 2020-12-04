@@ -9,10 +9,12 @@ import java.io.IOException;
 
 public class Player extends Movable {
     private int diamondsCount;
+    private String playerName;
 
-    public Player(Point2D position) throws IOException {
+    public Player(Point2D position, String playerName) throws IOException {
         super(position);
 
+        this.playerName = playerName;
         diamondsCount = 0;  
 
         FileInputStream inputStream = new FileInputStream("player.jpg");
@@ -54,4 +56,8 @@ public class Player extends Movable {
     }
 
     public int getDiamondsCount(){return this.diamondsCount;}
+
+    public String getPlayerName(){
+        return this.playerName;
+    }
 }

@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -112,7 +113,7 @@ public class App extends Application {
 	void startGame(ActionEvent event_) throws IOException {
 		canvas = new Canvas(1920, 1080);
 
-		app_start_game(new World(playerName.getText(), 250, 74, 38));
+		app_start_game(new World(playerName.getText(), 250, 74, 38, 40, 180));
 	}
 
 	@FXML
@@ -137,6 +138,13 @@ public class App extends Application {
 	 *@return      nothing
 	 */
 	private void drawScene() {
+		// set text properties
+		Platform.runLater(() -> {
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.setFont(new Font(20));
+			gc.setFill(Color.RED);
+		});
+
 		while(!Routines.isEndOfThreadRequestedByJavaVM() && !world.isOver) {
 			Platform.runLater(() ->{
 				GraphicsContext gc = canvas.getGraphicsContext2D();

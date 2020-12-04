@@ -6,20 +6,23 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Random;
 
 public class World {
     public boolean isOver;
 
     private Player player;
+    private HUD hud;
     private GameEntity[][] objectList;
     private int objectsXLen;
     private int objectsYLen;
     private int deltaMax;
     private int currentDelta;
 
-    public World(String player_name, int deltaMax, int objectsXLen, int objectsYLen) throws IOException {
-        this.player = new Player(new Point2D(25, 25));
+    public World(String playerName, int deltaMax, int objectsXLen, int objectsYLen, int textY, int gameLength) throws IOException {
+        this.player = new Player(new Point2D(25, 25), playerName);
+        this.hud = new HUD(new Date().getTime() + gameLength * 1000L, textY, objectsXLen);
         this.deltaMax = deltaMax;
         this.objectsXLen = objectsXLen;
         this.objectsYLen = objectsYLen;
@@ -36,6 +39,9 @@ public class World {
 
         // draw player on top of everything
         player.draw(gc);
+
+        // draw HUD
+        hud.draw(gc, player.getPlayerName(), player.getDiamondsCount());
     }
 
     public void control(KeyEvent event) {
@@ -158,12 +164,12 @@ public class World {
         }
 
         // create walls
-        int numberOfWalls = random.nextInt(4) + 1;
+        /*int numberOfWalls = random.nextInt(4) + 1;
         for(int i = 1; i < numberOfWalls + 1; i++){
-            for(int j = 1 + random.nextInt(5); j < objectsXLen - random.nextInt(10); j++){
+            for(int j = 1 + random.nextInt(5); j < objectsXLen - random.nextInt(10) - 1; j++){
                 objects[j][(i * 10) - 1] = new Wall(new Point2D(j * 25, ((i * 10) - 1) * 25));
             }
-        }
+        }*/
 
         // make room for player
         objects[1][1] = null;
