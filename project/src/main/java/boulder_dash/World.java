@@ -41,7 +41,7 @@ public class World {
         player.draw(gc);
 
         // draw HUD
-        hud.draw(gc, player.getPlayerName(), player.getDiamondsCount());
+        hud.draw(gc, player.getPlayerName(), player.getScore());
     }
 
     public void control(KeyEvent event) {
@@ -61,6 +61,12 @@ public class World {
     }
 
     public void simulate(int timeDelta) {
+        // end the game if no time is left
+        if(hud.getRemainingTime() <= 0) {
+            this.isOver = true;
+            return;
+        }
+
         // slow down boulders falling down
         if(this.currentDelta != this.deltaMax) {
             this.currentDelta += timeDelta;

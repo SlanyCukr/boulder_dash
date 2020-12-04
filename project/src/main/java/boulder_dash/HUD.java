@@ -30,9 +30,13 @@ public class HUD {
     }
 
     private void drawRemainingTime(GraphicsContext gc){
-        Date currentDate = new Date();
-        int remainingTime = (int) (endTime / 1000 - currentDate.getTime() / 1000);
+        int remainingTime = getRemainingTime();
 
         gc.fillText(String.valueOf(remainingTime),(3 * textXMax) / 4, textY);
+    }
+
+    public int getRemainingTime(){
+        Date currentDate = new Date();
+        return (int) (endTime / 1000 - currentDate.getTime() / 1000);
     }
 }

@@ -8,14 +8,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Player extends Movable {
-    private int diamondsCount;
+    private int score;
     private String playerName;
 
     public Player(Point2D position, String playerName) throws IOException {
         super(position);
 
         this.playerName = playerName;
-        diamondsCount = 0;  
+        score = 0;
 
         FileInputStream inputStream = new FileInputStream("player.jpg");
         image = new Image(inputStream);
@@ -52,10 +52,10 @@ public class Player extends Movable {
     }
 
     public void addDiamond(){
-        this.diamondsCount += 1;
+        this.score += 100;
     }
 
-    public int getDiamondsCount(){return this.diamondsCount;}
+    public int getScore(){return this.score;}
 
     public String getPlayerName(){
         return this.playerName;
