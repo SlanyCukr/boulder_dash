@@ -6,10 +6,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
-public class World {
+public class World implements Serializable {
+    public boolean isStopped;
     public boolean isOver;
     private boolean exitingGame;
 
@@ -24,10 +26,11 @@ public class World {
 
     public World(String playerName, int deltaMax, int objectsXLen, int objectsYLen, int textY, int gameLength) throws IOException {
         this.player = new Player(new Point2D(25, 25), playerName);
-        this.hud = new HUD(new Date().getTime() + gameLength * 1000L, textY, objectsXLen);
+        this.hud = new HUD(new Date().getTime() + (gameLength * 1000L), textY, objectsXLen);
         this.deltaMax = deltaMax;
         this.objectsXLen = objectsXLen;
         this.objectsYLen = objectsYLen;
+
         this.currentDelta = 0;
 
         objectList = generateGame();
@@ -37,17 +40,20 @@ public class World {
         return new HighScore(player.getScore(), player.getPlayerName());
     }
 
-    public void draw(GraphicsContext gc) {
-        for (GameEntity[] ge_arr : objectList)
-            for (GameEntity ge : ge_arr)
-                if (ge != null)
-                    ge.draw(gc);
+    public void draw(GraphicsContext gc){
+        try {
+            for (GameEntity[] ge_arr : objectList)
+                for (GameEntity ge : ge_arr)
+                    if (ge != null)
+                        ge.draw(gc);
 
-        // draw player on top of everything
-        player.draw(gc);
+            // draw player on top of everything
+            player.draw(gc);
 
-        // draw HUD
-        hud.draw(gc, player.getPlayerName(), player.getScore(), exitingGame);
+            // draw HUD
+            hud.draw(gc, player.getPlayerName(), player.getScore(), exitingGame);
+        }
+        catch(Exception ignored){}
     }
 
     public void control(KeyEvent event) {
@@ -62,7 +68,7 @@ public class World {
         else if (keyCode == KeyCode.D && playerCanMove(new Point2D(player.getPosition().getX() + 25, player.getPosition().getY())))
             player.left();
         else if (keyCode == KeyCode.ESCAPE) {
-            isOver = true;
+            isStopped = true;
         }
     }
 

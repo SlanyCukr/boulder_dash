@@ -6,10 +6,11 @@ import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
-public abstract class Movable implements GameEntity{
+public abstract class Movable implements GameEntity, Serializable {
     protected MyPoint2D position;
-    protected Image image;
+    protected transient Image image;
 
     public Movable(Point2D position) throws IOException {
         this.position = new MyPoint2D(position);
@@ -23,7 +24,11 @@ public abstract class Movable implements GameEntity{
         this.position = new MyPoint2D(point);
     }
 
-    public void draw(GraphicsContext gc){
-        gc.drawImage(image, getPosition().getX(), getPosition().getY());
+    public void draw(GraphicsContext gc) throws IOException {
+        gc.drawImage(getImage(), getPosition().getX(), getPosition().getY());
+    }
+
+    public Image getImage() throws IOException {
+        return null;
     }
 }

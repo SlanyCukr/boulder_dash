@@ -1,11 +1,15 @@
 package boulder_dash;
 
+import java.io.*;
 import java.sql.*;
 
 public class DataMaster {
     private static DataMaster instance = null;
+    private String savePath;
 
-    private DataMaster(){}
+    private DataMaster(){
+        savePath = "game.txt";
+    }
 
     public static DataMaster getInstance(){
         if(instance == null){
@@ -13,6 +17,25 @@ public class DataMaster {
         }
 
         return instance;
+    }
+
+    public World loadGame() throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(savePath);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+        World world = (World) objectInputStream.readObject();
+        objectInputStream.close();
+
+        return world;
+    }
+
+    public void saveGame(World world) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(savePath);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+        objectOutputStream.writeObject(world);
+        objectOutputStream.flush();
+        objectOutputStream.close();
     }
 
     public void createTable() throws SQLException {

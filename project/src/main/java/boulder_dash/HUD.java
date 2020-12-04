@@ -2,9 +2,10 @@ package boulder_dash;
 
 import javafx.scene.canvas.GraphicsContext;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class HUD {
+public class HUD implements Serializable {
     private long endTime;
     private double textY;
     private double textXMax;
@@ -14,6 +15,8 @@ public class HUD {
         this.endTime = endTime;
         this.textY = textY * 25;
         this.textXMax = textXMax * 25;
+
+        updateRemainingTime();
     }
 
     public void draw(GraphicsContext gc, String playerName, int numberOfDiamonds, boolean isExiting){

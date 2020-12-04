@@ -11,14 +11,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.sql.*;
@@ -115,20 +113,11 @@ public class App extends Application {
 
 	@FXML
 	void loadGame(ActionEvent event) throws IOException, ClassNotFoundException {
-		/*Object[] objects = DataMaster.getInstance().loadGame();
+		canvas = new Canvas(1920, 1080);
 
-		Player player1 = (Player) objects[0];
-		Player player2 = (Player) objects[1];
-		//Ball ball = (Ball) objects[2];
-		ScoreDrawer scoreDrawer = (ScoreDrawer) objects[3];
-		ScoreDetector scoreDetector = (ScoreDetector) objects[4];
-
-		canvas = new Canvas(640, 480);
-		//Game game = new Game(canvas.getWidth(), canvas.getHeight(), scoreDrawer.getFirstPlayerName(), scoreDrawer.getSecondPlayerName(), player1_UP, player1_DOWN, player2_UP, player2_DOWN);
-		//game.loadGame(player1, player2, ball, scoreDrawer, scoreDetector);
-
-		//app_start_game(game);
-		*/
+		World world = DataMaster.getInstance().loadGame();
+		world.isStopped = false;
+		app_start_game(world);
 	}
 
 	@FXML
@@ -146,7 +135,7 @@ public class App extends Application {
 			DataMaster.getInstance().addHighScore(hs);
 		}
 
-		// DataMaster.getInstance().saveGame(game.getSaveData());
+		DataMaster.getInstance().saveGame(world);
 
 		System.exit(0);
 	}
@@ -164,12 +153,12 @@ public class App extends Application {
 			gc.setFill(Color.RED);
 		});
 
-		while(!Routines.isEndOfThreadRequestedByJavaVM() && !world.isOver) {
+		while(!Routines.isEndOfThreadRequestedByJavaVM() && !world.isStopped && !world.isOver) {
 			Platform.runLater(() ->{
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				world.draw(gc);
-					});
+			});
 			Routines.sleep(25);
 			world.simulate(25);
 		}

@@ -6,15 +6,11 @@ import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Boulder extends Movable {
+public class Boulder extends Movable implements Serializable {
     public Boulder(Point2D position) throws IOException {
         super(position);
-
-        FileInputStream inputStream = new FileInputStream("boulder.jpg");
-        image = new Image(inputStream);
-
-        inputStream.close();
     }
 
     public Point2D getPosition(){
@@ -25,7 +21,19 @@ public class Boulder extends Movable {
         this.position = new MyPoint2D(point);
     }
 
-    public void draw(GraphicsContext gc){
-        gc.drawImage(image, getPosition().getX(), getPosition().getY());
+    @Override
+    public void draw(GraphicsContext gc) throws IOException {
+        gc.drawImage(getImage(), getPosition().getX(), getPosition().getY());
+    }
+
+    @Override
+    public Image getImage() throws IOException {
+        if(image == null){
+            FileInputStream inputStream = new FileInputStream("boulder.jpg");
+            image = new Image(inputStream);
+            inputStream.close();
+        }
+
+        return image;
     }
 }

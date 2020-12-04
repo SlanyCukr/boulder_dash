@@ -6,8 +6,9 @@ import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Player extends Movable {
+public class Player extends Movable implements Serializable {
     private int score;
     private String playerName;
 
@@ -16,11 +17,6 @@ public class Player extends Movable {
 
         this.playerName = playerName;
         score = 0;
-
-        FileInputStream inputStream = new FileInputStream("player.jpg");
-        image = new Image(inputStream);
-
-        inputStream.close();
     }
 
     public Point2D getPosition(){
@@ -31,8 +27,9 @@ public class Player extends Movable {
         this.position = new MyPoint2D(point);
     }
 
-    public void draw(GraphicsContext gc){
-        gc.drawImage(image, getPosition().getX(), getPosition().getY());
+    @Override
+    public void draw(GraphicsContext gc) throws IOException {
+        gc.drawImage(getImage(), getPosition().getX(), getPosition().getY());
     }
 
     public void up(){
@@ -63,5 +60,16 @@ public class Player extends Movable {
 
     public void bonusScore(int time){
         this.score += time * 10;
+    }
+
+    @Override
+    public Image getImage() throws IOException {
+        if(image == null){
+            FileInputStream inputStream = new FileInputStream("player.jpg");
+            image = new Image(inputStream);
+            inputStream.close();
+        }
+
+        return image;
     }
 }
