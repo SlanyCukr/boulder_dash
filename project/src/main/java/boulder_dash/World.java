@@ -33,6 +33,10 @@ public class World {
         objectList = generateGame();
     }
 
+    public HighScore getHighScore(){
+        return new HighScore(player.getScore(), player.getPlayerName());
+    }
+
     public void draw(GraphicsContext gc) {
         for (GameEntity[] ge_arr : objectList)
             for (GameEntity ge : ge_arr)
@@ -139,12 +143,6 @@ public class World {
             return true;
         }
         return false;
-    }
-
-    private void endGameThroughExit(){
-        player.bonusScore(hud.getRemainingTime());
-
-        isOver = true;
     }
 
     private GameEntity[][] generateGame() throws IOException {

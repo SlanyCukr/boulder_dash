@@ -1,6 +1,5 @@
 package boulder_dash;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,7 +13,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -22,7 +20,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.*;
 
 import java.util.ArrayList;
@@ -59,7 +56,35 @@ public class App extends Application {
 	private TableView<HighScore> high_scores_table;
 
 	@FXML
-	public void initialize() {
+	public void initialize() throws SQLException {
+		TableColumn nameCol = new TableColumn("Name");
+		nameCol.setMinWidth(300);
+		nameCol.setCellValueFactory(new PropertyValueFactory<HighScore, String>("player"));
+
+		TableColumn scoreCol = new TableColumn("Score");
+		scoreCol.setMinWidth(200);
+
+		scoreCol.setSortType(TableColumn.SortType.DESCENDING);
+		high_scores_table.getSortOrder().add(scoreCol);
+		scoreCol.setCellValueFactory(new PropertyValueFactory<HighScore, Integer>("value"));
+
+		high_scores_table.getColumns().addAll(nameCol, scoreCol);
+
+		highScores = new ArrayList<>();
+		high_scores_table.setItems(FXCollections.observableList(highScores));
+
+		/*connection = DriverManager.getConnection("jdbc:derby:scoreDB;create=true");
+
+		Statement stmt = connection.createStatement();
+		// String sql = "CREATE TABLE High_scores (name VARCHAR(20) NOT NULL, score INT NOT NULL, PRIMARY KEY (name));";
+		// stmt.execute(sql);
+		//stmt.execute("DELETE FROM High_scores");
+
+		ResultSet rs = stmt.executeQuery("SELECT * FROM High_scores");
+		while(rs.next()) {
+			highScores.add(new HighScore(rs.getInt("score"), rs.getString("name")));
+		}
+		high_scores_table.sort();*/
 	}
 
 	private void app_start_game(World world){
@@ -160,8 +185,7 @@ public class App extends Application {
 			final Stage stage = (Stage) canvas.getScene().getWindow();
 			stage.close();
 
-			/*
-			highScores.add(game.getHighScore());
+			highScores.add(world.getHighScore());
 			//high_scores_table.getItems().add(game.getHighScore());
 			highScores.sort(Comparator.comparing((HighScore hs) -> hs.value.getValue()).reversed());
 
@@ -172,7 +196,6 @@ public class App extends Application {
 			high_scores_table.getItems().clear();
 			high_scores_table.getItems().addAll(highScores);
 			high_scores_table.sort();
-			*/
 		});
 	}
 
