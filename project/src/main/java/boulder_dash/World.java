@@ -2,6 +2,7 @@ package boulder_dash;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Light;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -59,13 +60,13 @@ public class World implements Serializable {
     public void control(KeyEvent event) {
         KeyCode keyCode = event.getCode();
 
-        if (keyCode == KeyCode.W && playerCanMove(new Point2D(player.getPosition().getX(), player.getPosition().getY() - 25)))
+        if (keyCode == KeyCode.W && playerCanMove(player.getPosition(), new Point2D(player.getPosition().getX(), player.getPosition().getY() - 25)))
             player.up();
-        else if (keyCode == KeyCode.S && playerCanMove(new Point2D(player.getPosition().getX(), player.getPosition().getY() + 25)))
+        else if (keyCode == KeyCode.S && playerCanMove(player.getPosition(), new Point2D(player.getPosition().getX(), player.getPosition().getY() + 25)))
             player.down();
-        else if (keyCode == KeyCode.A && playerCanMove(new Point2D(player.getPosition().getX() - 25, player.getPosition().getY())))
+        else if (keyCode == KeyCode.A && playerCanMove(player.getPosition(), new Point2D(player.getPosition().getX() - 25, player.getPosition().getY())))
             player.right();
-        else if (keyCode == KeyCode.D && playerCanMove(new Point2D(player.getPosition().getX() + 25, player.getPosition().getY())))
+        else if (keyCode == KeyCode.D && playerCanMove(player.getPosition(), new Point2D(player.getPosition().getX() + 25, player.getPosition().getY())))
             player.left();
         else if (keyCode == KeyCode.ESCAPE) {
             isStopped = true;
@@ -73,7 +74,7 @@ public class World implements Serializable {
     }
 
     public void simulate(int timeDelta) {
-        // calculate smoothly bonus score
+        // smoothly calculates bonus score
         if(exitingGame){
             player.bonusScore(hud.decrementRemainingTime());
         }
@@ -116,7 +117,7 @@ public class World implements Serializable {
         }
     }
 
-    private boolean playerCanMove(Point2D nextPosition){
+    private boolean playerCanMove(Point2D previousPosition, Point2D nextPosition){
         int xPosition = (int) (nextPosition.getX() / 25);
         int yPosition = (int) (nextPosition.getY() / 25);
 
@@ -147,6 +148,23 @@ public class World implements Serializable {
             objectList[xPosition][yPosition] = null;
             player.addDiamond();
             return true;
+        }
+
+        // move boulder
+        if(objectList[xPosition][yPosition].getClass().getName().equals("boulder_dash.Boulder")){
+            int directionX = (int) (-previousPosition.getX() / 25 + xPosition);
+            int directionY = (int) (-previousPosition.getY() / 25 + yPosition);
+
+            int boulderNextX = xPosition + directionX;
+            int boulderNextY = yPosition + directionY;
+
+            if(objectList[boulderNextX][boulderNextY] == null){
+                Boulder boulder = (Boulder) objectList[xPosition][yPosition];
+                boulder.setPosition(new Point2D(boulderNextX * 25, boulderNextY * 25));
+                objectList[boulderNextX][boulderNextY] = boulder;
+                objectList[xPosition][yPosition] = null;
+                return true;
+            }
         }
         return false;
     }
